@@ -12,14 +12,15 @@
     "incremental": true,
     "baseUrl": "./src",
     "paths": {
-      "~/config/*": ["config/*"],
-      "~/constants/*": ["constants/*"],
-      "~/decorators/*": ["decorators/*"],
-      "~/entities/*": ["entities/*"],
-      "~/guards/*": ["guards/*"],
-      "~/modules/*": ["modules/*"],
-      "~/pipes/*": ["pipes/*"],
-      "~/utils/*": ["utils/*"]
+      "~/config/*": ["./config/*"],
+      "~/constants/*": ["./constants/*"],
+      "~/decorators/*": ["./decorators/*"],
+      "~/entities/*": ["./entities/*"],
+      "~/guards/*": ["./guards/*"],
+      "~/modules/*": ["./modules/*"],
+      "~/pipes/*": ["./pipes/*"],
+      "~/utils/*": ["./utils/*"],
+      "~/*": ["./*"]
     }
   },
   "exclude": ["node_modules", "dist"]

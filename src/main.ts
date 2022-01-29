@@ -10,13 +10,7 @@ import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import {
-  BASE,
-  TEMPLATE_HOSTNAME,
-  TEMPLATE_HTTP_PORT,
-  TEMPLATE_TCP_PORT,
-  VERSION,
-} from './constants';
+import { BASE, HOSTNAME, HTTP_PORT, TCP_PORT, VERSION } from './constants';
 
 async function bootstrap() {
   // The APM needs to be started before anything else is initialized
@@ -33,9 +27,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get<ConfigService>(ConfigService);
-  const HOSTNAME = configService.get<string>(TEMPLATE_HOSTNAME);
-  const HTTP_PORT = Number(configService.get<string>(TEMPLATE_HTTP_PORT));
-  const TCP_PORT = Number(configService.get<string>(TEMPLATE_TCP_PORT));
+  const _HOSTNAME = configService.get<string>(HOSTNAME);
+  const _HTTP_PORT = Number(configService.get<string>(HTTP_PORT));
+  const _TCP_PORT = Number(configService.get<string>(TCP_PORT));
 
   const options = new DocumentBuilder()
     .setTitle('Nest Template')
@@ -73,7 +67,7 @@ async function bootstrap() {
   await app.startAllMicroservicesAsync();
   await app.listen(HTTP_PORT);
 
-  Logger.log(`Service ready on http://${HOSTNAME}:${HTTP_PORT}`, 'Root');
-  Logger.log(`Microservice ready on tcp://${HOSTNAME}:${TCP_PORT}`, 'Root');
+  Logger.log(`Service ready on http://${_HOSTNAME}:${_HTTP_PORT}`, 'Root');
+  Logger.log(`Microservice ready on tcp://${_HOSTNAME}:${_TCP_PORT}`, 'Root');
 }
 bootstrap();

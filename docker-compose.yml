@@ -1,6 +1,18 @@
 # docker-compose.yml
 version: '3.6'
 services:
+  dev-db:
+    image: postgres # use latest official postgres version
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=dev
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+
   test-db:
     image: postgres # use latest official postgres version
     restart: always
