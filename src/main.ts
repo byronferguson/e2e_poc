@@ -1,10 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const helmet = require('helmet');
-
 import {
   ElasticApmErrorInterceptor,
   ElasticApmHttpUserContextInterceptor,
-  startElasticApmInstance,
+  startElasticApmInstance
 } from '@bigblueswimschool/elastic-apm-nest';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -17,8 +14,10 @@ import {
   TEMPLATE_HOSTNAME,
   TEMPLATE_HTTP_PORT,
   TEMPLATE_TCP_PORT,
-  VERSION,
+  VERSION
 } from './constants';
+import helmet from ('helmet');
+
 
 async function bootstrap() {
   // The APM needs to be started before anything else is initialized

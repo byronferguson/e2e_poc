@@ -17,20 +17,11 @@ $ yarn
 - Update the database schema in `database-config.service.ts`
   - ATTN: The schema needs to already be defined in the target database before the service can connect to it
 - Update the constant names in `constants.ts`
-  - Example, for `employee service` 
-      `export const EMPLOYEE_SERVICE = 'EMPLOYEE_SERVICE';
-      export const EMPLOYEE_HOSTNAME = 'EMPLOYEE_HOSTNAME';
-      export const EMPLOYEE_HTTP_PORT = 'EMPLOYEE_HTTP_PORT';
-      export const EMPLOYEE_TCP_PORT = 'EMPLOYEE_TCP_PORT';
-      export const EMPLOYEE_RMQ_PORT = 'EMPLOYEE_RMQ_PORT';
-      export const BASE = 'employee';
-      export const VERSION = 2; `
+  - Example, for `employee service`
+    `export const EMPLOYEE_SERVICE = 'EMPLOYEE_SERVICE'; export const EMPLOYEE_HOSTNAME = 'EMPLOYEE_HOSTNAME'; export const EMPLOYEE_HTTP_PORT = 'EMPLOYEE_HTTP_PORT'; export const EMPLOYEE_TCP_PORT = 'EMPLOYEE_TCP_PORT'; export const EMPLOYEE_RMQ_PORT = 'EMPLOYEE_RMQ_PORT'; export const BASE = 'employee'; export const VERSION = 2; `
 - Update the same constants in `main.ts`
-- Add the port names to the .env, example below. 
-  `EMPLOYEE_HOSTNAME="localhost"
-   EMPLOYEE_HTTP_PORT=3500
-   EMPLOYEE_TCP_PORT=3501
-   EMPLOYEE_RMQ_PORT=3502`
+- Add the port names to the .env, example below.
+  `EMPLOYEE_HOSTNAME="localhost" EMPLOYEE_HTTP_PORT=3500 EMPLOYEE_TCP_PORT=3501 EMPLOYEE_RMQ_PORT=3502`
 
 ## Running the app
 
