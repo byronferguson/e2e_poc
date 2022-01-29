@@ -1,0 +1,56 @@
+{
+  "eslint.validate": [
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+    {
+      "language": "javascript",
+      "autoFix": true
+    },
+    {
+      "language": "javascriptreact",
+      "autoFix": true
+    },
+    {
+      "language": "typescript",
+      "autoFix": true
+    },
+    {
+      "language": "typescriptreact",
+      "autoFix": true
+    }
+  ],
+  "eslint.autoFixOnSave": true,
+  "vetur.validation.template": true,
+  "vetur.validation.script": true,
+  "vetur.useWorkspaceDependencies": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "jira-plugin.workingProject": "",
+  "cSpell.words": [
+    "Arial",
+    "Chalker",
+    "Checkin",
+    "IPDATA",
+    "Morford",
+    "Signup",
+    "UTMCODE",
+    "asynciterable",
+    "bigblueswimschool",
+    "cardconnect",
+    "esnext",
+    "giftcards",
+    "museo",
+    "noindex",
+    "persistedstate",
+    "purgecss",
+    "stickybits",
+    "unselectable",
+    "unslug",
+    "youtube",
+    "zipcode"
+  ],
+  "svg.preview.background": "transparent"
+}

@@ -1,0 +1,98 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Build Image
+
+on:
+  push:
+    branches: [ develop, rc/*, hotfix/*, production ]
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Authenticate GoogleCloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Authenticate Docker
+        run: gcloud --quiet auth configure-docker
+      - name: Get Version
+        run: echo "CURRENT_VERSION=$(node -pe "require('./package.json').version")" >> $GITHUB_ENV
+      - name: Build Docker Image
+        run: docker build -t ${GITHUB_REPOSITORY##*/}:${{ github.run_id }} . --build-arg NPM_TOKEN=$NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Tag and Push Run Image
+        run: |
+          docker tag ${GITHUB_REPOSITORY##*/}:${{ github.run_id }} ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:${{ github.run_id }}
+          docker push ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:${{ github.run_id }}
+      - name: Tag and Push develop Image
+        if: "contains(github.ref, 'develop')"
+        run: |
+          docker tag ${GITHUB_REPOSITORY##*/}:${{ github.run_id }} ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:develop
+          docker push ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:develop
+      - name: Tag and Push latest Image
+        if: "contains(github.ref, 'production')"
+        run: |
+          docker tag ${GITHUB_REPOSITORY##*/}:${{ github.run_id }} ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:latest
+          docker push ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:latest
+      - name: Tag and Push tagged Image
+        if: "contains(github.ref, 'production')"
+        continue-on-error: true
+        run: |
+          docker tag ${GITHUB_REPOSITORY##*/}:${{ github.run_id }} ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:${{ env.CURRENT_VERSION }}
+          docker push ${{ secrets.IMAGE_REPOSITORY_BASE_URL }}/${GITHUB_REPOSITORY##*/}:${{ env.CURRENT_VERSION }}
+  trigger:
+    needs: build
+    name: Trigger Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Production Deploy
+        if: "contains(github.ref, 'production')"
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy Image
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          inputs: '{ "environment": "production", "imageTag": "${{ env.IMAGE_TAG }}" }'
+        env:
+          IMAGE_TAG: ${{ github.run_id }}
+      - name: Trigger Demo Deploy
+        if: "contains(github.ref, 'production')" 
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy Image
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          inputs: '{ "environment": "demo", "imageTag": "${{ env.IMAGE_TAG }}" }'
+        env:
+          IMAGE_TAG: ${{ github.run_id }}
+      # - name: Trigger Staging Deploy
+      #   if: "contains(github.ref, 'rc/') || contains(github.ref, 'hotfix/')" 
+      #   uses: benc-uk/workflow-dispatch@v1
+      #   with:
+      #     workflow: Deploy Image
+      #     token: ${{ secrets.WORKFLOW_TOKEN }}
+      #     inputs: '{ "environment": "staging", "imageTag": "${{ env.IMAGE_TAG }}" }'
+      #   env:
+      #     IMAGE_TAG: ${{ github.run_id }}
+      - name: Trigger Develop Deploy
+        if: "contains(github.ref, 'develop') || contains(github.ref, 'rc/') || contains(github.ref, 'hotfix/')" 
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy Image
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+          inputs: '{ "environment": "develop", "imageTag": "${{ env.IMAGE_TAG }}" }'
+        env:
+          IMAGE_TAG: ${{ github.run_id }}
+

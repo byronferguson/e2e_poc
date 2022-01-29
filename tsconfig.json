@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "incremental": true,
+    "baseUrl": "./src",
+    "paths": {
+      "~/config/*": ["config/*"],
+      "~/constants/*": ["constants/*"],
+      "~/decorators/*": ["decorators/*"],
+      "~/entities/*": ["entities/*"],
+      "~/guards/*": ["guards/*"],
+      "~/modules/*": ["modules/*"],
+      "~/pipes/*": ["pipes/*"],
+      "~/utils/*": ["utils/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

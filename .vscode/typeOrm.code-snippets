@@ -1,0 +1,83 @@
+{
+  "Base TypeORM Entity": {
+    "prefix": "entity",
+    "body": [
+      "import { Entity, Column } from 'typeorm';",
+      "",
+      "import { BaseEntity } from '~/entities/base.entity';",
+      "",
+      "@Entity()",
+      "export class ${1:EntityName}Entity extends BaseEntity {",
+      "  @Column()",
+      "  ${2:field}: ${3:example}",
+      "",
+      "  ${0}",
+      "}",
+      ""
+    ],
+    "description": "Base TypeORM Entity"
+  },
+  "Inject Repository": {
+    "prefix": "injrepo",
+    "body": [
+      "@InjectRepository(${1:Entity}) private ${1/^(.)(.*)$/${1:/downcase}${2}/}Repository: Repository<${1:Entity}>,"
+    ],
+    "description": "Inject Repository"
+  },
+  "TypeOrmCrudService": {
+    "prefix": "crud-service",
+    "body": [
+      "import { Injectable, Logger } from '@nestjs/common';",
+      "import { InjectRepository } from '@nestjs/typeorm';",
+      "import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';",
+      "import { Repository } from 'typeorm';",
+      "import { ${1:Entity}Entity } from './${1/([a-z0-9]|(?=[A-Z]))([A-Z])/${1:/downcase}-${2:/downcase}/g}.entity';",
+      "",
+      "@Injectable()",
+      "export class ${1:Entity}Service extends TypeOrmCrudService<${1:Entity}Entity> {",
+      "  private readonly logger: Logger;",
+      "",
+      "  constructor(",
+      "    @InjectRepository(${1:Entity}Entity) protected readonly repo: Repository<${1:Entity}Entity>,",
+      "  ) {",
+      "    super(repo);",
+      "    this.logger = new Logger('${1:Entity}Service');",
+      "  }",
+      "}",
+      ""
+    ],
+    "description": "Creates a service based on TypeOrmCrud"
+  },
+  "TypeOrmCrudController": {
+    "prefix": "crud-controller",
+    "body": [
+      "import { Controller, Logger, Post, Body, Get, Param } from '@nestjs/common';",
+      "import { CrudController, Crud } from '@nestjsx/crud';",
+      "import { ApiTags } from '@nestjs/swagger';",
+      "",
+      "import { TIMESTAMP_FIELDS } from '~/constants/timestamp-fields';",
+      "import { ${1:Entity}Entity } from './${1/([a-z0-9]|(?=[A-Z]))([A-Z])/${1:/downcase}-${2:/downcase}/g}.entity';",
+      "import { ${1:Entity}Service } from './${1/([a-z0-9]|(?=[A-Z]))([A-Z])/${1:/downcase}-${2:/downcase}/g}.service';",
+      "",
+      "@Crud({",
+      "  model: {",
+      "    type: ${1:Entity}Entity,",
+      "  },",
+      "  // dto: {",
+      "  //   create: Create${1:Entity}Dto,",
+      "  // },",
+      "})",
+      "@ApiTags('${1/^(.)(.*)$/${1:/downcase}${2}/}')",
+      "@Controller()",
+      "export class ${1:Entity}Controller implements CrudController<${1:Entity}Entity> {",
+      "  private readonly logger: Logger;",
+      "",
+      "  constructor(public service: ${1:Entity}Service) {",
+      "    this.logger = new Logger('${1:Entity}Controller}');",
+      "  }",
+      "}",
+      ""
+    ],
+    "description": "TypeOrmCrudController"
+  }
+}

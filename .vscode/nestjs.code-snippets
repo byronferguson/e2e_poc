@@ -1,0 +1,13 @@
+{
+  "Context Logger": {
+    "prefix": "log",
+    "body": [
+      "private readonly logger: Logger;",
+      "",
+      "constructor($0) {",
+      "  this.logger = new Logger('${1:FileName}')",
+      "}"
+    ],
+    "description": "Context Logger"
+  }
+}

@@ -1,0 +1,42 @@
+# This workflow will create a draft PR for each of the trigger branches
+# feature and bug branches will merge into develop
+# hotfix and rc branches will merge into production
+
+name: Draft Pull Request
+
+on:
+  push:
+    branches: [ feature/*, bug/*, hotfix/*, rc/* ]
+
+jobs:
+  create-pr:
+    name: Create PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Feature PR
+        if: "contains(github.ref, 'feature/')"
+        run: |
+          echo "BRANCH_PREFIX=feature/" >> $GITHUB_ENV
+          echo "PULL_REQUEST_BRANCH=develop" >> $GITHUB_ENV
+      - name: Bug PR
+        if: "contains(github.ref, 'bug/')"
+        run: |
+          echo "BRANCH_PREFIX=bug/" >> $GITHUB_ENV
+          echo "PULL_REQUEST_BRANCH=develop" >> $GITHUB_ENV
+      - name: Hotfix PR
+        if: "contains(github.ref, 'hotfix/')"
+        run: |
+          echo "BRANCH_PREFIX=hotfix/" >> $GITHUB_ENV
+          echo "PULL_REQUEST_BRANCH=production" >> $GITHUB_ENV
+      - name: RC PR
+        if: "contains(github.ref, 'rc/')"
+        run: |
+          echo "BRANCH_PREFIX=rc/" >> $GITHUB_ENV
+          echo "PULL_REQUEST_BRANCH=production" >> $GITHUB_ENV
+      - name: Pull Request
+        uses: vsoch/pull-request-action@1.0.12
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_PREFIX: ${{ env.BRANCH_PREFIX }}
+          PULL_REQUEST_BRANCH: ${{ env.PULL_REQUEST_BRANCH }}
+          PULL_REQUEST_DRAFT: true
