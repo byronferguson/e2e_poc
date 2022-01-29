@@ -1,23 +1,22 @@
 import {
   ElasticApmErrorInterceptor,
   ElasticApmHttpUserContextInterceptor,
-  startElasticApmInstance
+  startElasticApmInstance,
 } from '@bigblueswimschool/elastic-apm-nest';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import {
   BASE,
   TEMPLATE_HOSTNAME,
   TEMPLATE_HTTP_PORT,
   TEMPLATE_TCP_PORT,
-  VERSION
+  VERSION,
 } from './constants';
-import helmet from ('helmet');
-
 
 async function bootstrap() {
   // The APM needs to be started before anything else is initialized
